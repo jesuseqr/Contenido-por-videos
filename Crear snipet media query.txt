@@ -1,0 +1,51 @@
+Crear snipet media query
+
+VISUAL STUDIO CODE
+
+Code > Preferences > User snippets
+
+Seleccionar el tipo de archivo donde funcionará el snippet: css.json
+
+1. Darle el nombre (va a ser un objeto de javascript).
+2. Prefijo: va a ser el atajo por el cual va a ser invocado.
+3. Body: lo que va generar al ser invocado.
+   Símbolos dentro del media query:
+   $ place holder: es el lugar donde se ubicará el cursor al momento de invocar el media query.
+   {} es donde se ubicará el media query.
+   \n salto de línea.
+   \t 
+
+"media query" : {
+	"prefix" : "mq",
+	"body" : [
+		"@media (min-width: $1 {\n\t$0\n}"
+	]
+}
+
+SUBLIME
+
+Colocar el snippet dentro de los corchetes después de CDATA.
+
+Descomentar la opción trigger y colocar el disparador o prefijo de invocación.
+
+Tools > Developer > New snippet
+
+<snippet>
+	<content><![CDATA[
+
+@media (min-width: 768px) {
+	.barra-navegacion {
+		display: flex;
+		justify-content: space-between;
+	}
+
+@media (${1: max or min}-width: ${2: enter value here}) {
+    ${3:}
+}
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>mq</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
