@@ -1,0 +1,201 @@
+54
+
+Agregar personalización de servicios a través del Dashboard de WordPress.
+
+1. Seleccionar la opción páginas del menú latetal izquierdo.
+
+2. Elegir la opción "Agregar nueva" junto al título "Páginas" de la sección.
+
+3. Colocar en el campo "Título" la palabra "Servicios". De forma automática, WP guardará esta página con el contenido colocado en este campo, así como, asignará de forma automática un slug para la misma con este contenido. Si se desea modificar el slug, se hace en la opción "Enlace permanente" del menú lateral derecho.
+
+4. Pegar contenido de Lorem Ipsum en el segundo campo (grande) del contenido que se muestra en el Dashboard. Publicar la página.
+
+5. Crear el archivo "page-$slug.php" en la carpeta raíz del tema. En este caso sustituiremos "$slug" con "servicios". Escribir solo <h1>Hola</h1> y guardar el archivo. Abrir la página del sitio en el navegador para comprobar que está tomandola con el slug.
+
+6. Nuevamente en el archivo page-servicios.php, sustituimos todo el contenido con:
+	<?php get_header(); ?>
+		<main class="contenedor pagina seccion no-sidebar">
+			<div class="contenido-principal text-center">
+				<?php get_template_part('template-parts/paginas'); ?>
+			</div>
+		</main>
+	<?php get_footer(); ?>
+
+Guardamos el archivo.
+
+55
+
+1. En la carpeta "plugins" de la carpeta wp-content (donde está ubicada la carpeta themes), crear una carpeta con el mismo nombre que llevará el plugin a crear (servicios_post_type). Crear dentro el archivo "servicios_post_types.php".
+
+2. Colocar la descripción del plugin como se indica a continuación y guardar:
+
+	<?php
+		/*
+			Plugin Name: Servicios Post Types
+			Plugin URI:
+			Description: Añade Post Types al sitio SICCTV
+			Version: 1.0.0
+			Author: X3JQ
+			Author URI:
+			Text Domain: sicctv
+
+		*/
+
+56
+
+1. Copiar el código del recurso gist en la URL:
+
+https://gist.github.com/juanpablogdl/2ff8f4a6f0ed075fb284767a520f99f9
+
+Pegarlo en la parte final del archivo php creado anteriormente.
+
+El plugin lo creamos con la función sicctv_servicios_post_type() y hace hook al "init" por medio del add_action al final del código.
+
+El arreglo labels es para realizar las traducciones que realizará el dashboard al momento de mostrar el plugin. Sustituir los parametros "Clase(s)" por "Servicio(s)" y "gymfitness" por "sicctv" respectivamente según sea necesario
+
+El arreglo argumentos ($args) contiene los campos que se mostrarán en el dashboard. En el parámetro "supports", se encuentra un arreglo que determina los campos y opciones que permite o muestra el plugin en el dashboard. Se puede ver toda la información que soporta este parámetro en la página https://developer.wordpress.org/reference/functions/post_type_supports/.
+
+Cambiar el valor del parametro "hieranchical" de "false" a "true", para que las publicaciones creadas sean tomadas como posts, los cuales no poseen padre, a diferencia de las páginas que pueden o no.
+
+Con el nombre que se registra el post type, que se encuentra dentro del parentesis de register_post_type(), se pueden realizar queries personalizados y decirle, por ejemplo que queremos mostrar todas las clases.
+
+Se guardan los cambios.
+
+2. Activar el plugin. Esto activa una nueva opción en el menú del dashboard con el nombre asignado. Al hacer click en esta nueva opción, abrirá una ventana con la interfaz nativa para crear un post.
+
+Para crear otro post type solo copiar el código del gist y pegar debajo del código anterior, y modificar para que no sea igual al anterior y no generar un conflicto. Personalizar según sea necesario.
+
+3. Para evitar que el código del plugin sea visualizado directamente del navegador por medio de la URL, agregar debajo de la descripción comentada del plugin la línea de código:
+
+	if(!defined('ABSPATH')) die();
+
+
+57
+
+1. Descargar, instalar y activar el plugin "Advanced custom fields" en WP.
+
+2. Presionar la opción del plugin instalado "Custom fields", en el sidebar izquierdo. Presionar "Add New" para crear un nuevo grupo de campos. En el campo "Agregar título" colocamos "Servicios".
+
+3. En la sección "Location" se define donde se van a mostrar los campos. Solo modificar la opción de la tercera lista por "Servicio".
+
+4. Presionar "Add field " en la primera sección. Generá diferentes opciones a rellenar, tales como la etiqueta del campo, nombre del campo, tipo de campo. Agregar:
+	Field label: Título del servicio
+	Field name: titulo_servicio
+	Field type: Text
+	Instructions: Escribir el título del servicio a agregar en el campo.
+
+El resto se deja como viene por defecto. Presionamos "Close Field" para guardar los datos creados.
+
+5. Al inicio de esta pantalla se habrá creado un elemento de la lista. Al posicionar el puntero sobre su "Label" se mostrarán unas opciones debajo de la misma. Para agregar la descripción, la duplicaremos y cambiaremos los datos por:
+	Field label: Descripción del servicio
+	Field name: descripcion_servicio
+	Field type: Text
+	Instructions: Escribir la descripción del servicio que se va a agregar en el campo.
+
+Presionar "Publicar" para crear el grupo de campos.
+
+7. Al presionar "Servicios" en el menú del dashboard y elegir "Agregar Servicio", se ven 3 campos nuevos al final.
+
+
+58
+
+1. Dentro de la pantalla de "Servicios", elegir "Agregar Servicio" y, en las opciones laterales de la derecha, elegimos "Guardar imagen destacada". Cargar las imagenes que se utilizarán para las publicaciones de los servicios.
+
+	1.1 En caso de no tener disponible el botón de "Guardar imagen destacada", agregar el siguiente código al final del archivo "functions.php" del tema:
+
+	//agregando funcionalidad de imágen destacada al tema
+	add_theme_support('post-thumbnails');
+
+2. Agregar título "Evaluación de Infraestructura". Colocar una descripción con lorem ipsum.
+
+3. Presionar "Publicar". Al ver "Servicios" nuevamente encontraremos la publicación creada.
+
+4. Crear el resto de los servicios con la imagen, título y descripción correspondiente y publicar.
+
+
+59
+
+1. Crear la carpeta "inc" de include en la carpeta raíz del tema. Esta contiene los archivos que se pueden incluir en otros. Dentro crear el archivo "queries.php".
+
+2. Agregar en el archivo "functions.php", al principio debajo de la etiqueta de php:
+
+/** Consultas reutilizables  **/
+
+require get_template_directory() . '/inc/queries.php';
+
+3. En el archivo "queries.php" colocar los siguiente:
+
+<?php
+
+function sicctv_lista_servicios(){
+	echo "funciona";
+}
+
+// este cierre no va?>
+
+4. En el archivo page-nuestras-clases.php, debajo de get_template_part('template-parts/paginas'), llamar la función agregando la línea:
+
+<?php sicctv_lista_servicios; ?>
+
+Recargar la página en el navegador para verificar que impreme lo indicado, confirmando que enlaza el archivo.
+
+5. De nuevo en "queries.php", eliminar el contenido de las llaves y agregar html en ellas como sigue, para hacer un consulta a la base de datos de WP para traer los resultados que tenemos en nuestro custom post types, por medio de un query post, get post o WP query (consultar en codex):
+
+	?>
+	<ul class="lista-servicios">
+		<?php
+			$args = array(//se crea un arreglo para almacenar los posts
+				'post_type' => 'sicctv_servicios', // 1. Que post type queremos consultar
+				'posts_per_page' => 10, // 2. Cantidad de posts por página
+				'orderby' => 'title',
+				'order' => 'ASC'
+			);
+			$servicios = new WP_Query($args); // WP Query es la clase que WP da para consultar la base de datos
+			while ( $servicios->have_posts() ): $servicios->the_post();// Muestra los posts que hayan si los hay (itera sobre los resultados)
+		?>
+			<li>
+				<h1><?php the_title(); ?></h1> <!-- Trae el título de los posts solicitados en el query -->
+			</li>
+
+	<?php endwhile; wp_reset_postdata();//Indica a WP que se terminó de usar el WP Query ?>
+	</ul>
+	<?php
+
+
+60
+
+1. En el archivo "queries.php" sustituir el contenido de la función por:
+
+	?>
+	<section id="servicios" class="container-fluid" > <!-- Service section -->
+		<?php
+			$args = array(//se crea un arreglo para almacenar los posts
+				'post_type' => 'sicctv_servicios', // 1. Que post type queremos consultar
+				'posts_per_page' => 10, // 2. Cantidad de posts por página
+				'orderby' => 'title',
+				'order' => 'ASC'
+			);
+			$servicios = new WP_Query($args); // WP Query es la clase que WP da para consultar la base de datos
+			while ( $servicios->have_posts() ): $servicios->the_post();// Muestra los posts que hayan si los hay (itera sobre los resultados)
+		?>
+		<div class="row justify-content-md-center">
+		    <div class="col-md-3">
+		    	<div class="tarjeta container-fluid">
+		    		<div class="img-fluid mx-auto d-block">
+		    			<?php the_post_thumbnail(); ?>
+		    		</div>
+		    	</div>
+				<a href="<?php the_permalink(); ?>">
+					<h4><?php the_title(); ?></h4>
+				</a>
+				<p><?php the_content(); ?></p>
+		    </div>
+		</div>
+		<br>
+		<?php endwhile; wp_reset_postdata();//Indica a WP que se terminó de usar el WP Query ?>
+	</section> <!-- End Service section -->
+	<?php
+
+
+61
+
